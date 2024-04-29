@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   async signToken(
-    userId: number,
+    userId: string,
     email: string,
   ): Promise<{
     accesToken: string;
