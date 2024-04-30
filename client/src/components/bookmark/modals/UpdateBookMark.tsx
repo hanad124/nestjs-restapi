@@ -1,41 +1,60 @@
-import { useState, useTransition } from "react";
+import { useEffect, useTransition } from "react";
 
-import { openNewBookMarkModal } from "@/store/bookmodal";
+import { OpenUpdateBookMarkModal, UseBookMarkId } from "@/store/bookmodal";
 import { Dialog, DialogContent } from "../../ui/dialog";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import Input from "../../Input";
 import { FiLoader } from "react-icons/fi";
-import { createBookMark } from "@/apicalls/bookmark";
+import {
+  createBookMark,
+  getSingleBookMark,
+  updateBookMark,
+} from "@/apicalls/bookmark";
 import { useBookMark } from "@/store/bookmarkStore";
 
-const NewBook = () => {
-  const [loading, setLoading] = useState(false);
+const UpdateBookMark = () => {
   const [isPending, startTransition] = useTransition();
 
-  const { open, setOpen } = openNewBookMarkModal();
+  const { open, setOpen } = OpenUpdateBookMarkModal();
   const { fetchBookMarks } = useBookMark();
+  const { id } = UseBookMarkId();
 
   const {
     register,
     handleSubmit,
     setValue,
-
-    formState: { errors, isLoading },
+    formState: { errors },
     reset,
   } = useForm<FieldValues>({
     defaultValues: {},
   });
 
+  useEffect(() => {
+    const getBookMark = async () => {
+      const res = await getSingleBookMark(id);
+      setValue("title", res?.data?.data?.title);
+      setValue("description", res?.data?.data?.description);
+      setValue("link", res?.data?.data?.link);
+    };
+
+    if (id) {
+      getBookMark();
+    }
+  }, [open]);
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     startTransition(() => {
-      createBookMark({
-        title: data.title,
-        description: data.description,
-        link: data.link,
-      })
+      updateBookMark(
+        {
+          title: data.title,
+          description: data.description,
+          link: data.link,
+        },
+        id
+      )
         .then(() => {
-          toast.success("BookMark created successfully!");
+          toast.success("BookMark updated successfully!");
           setOpen(false);
           reset();
           fetchBookMarks();
@@ -60,7 +79,7 @@ const NewBook = () => {
         }}
       >
         <DialogContent className="sm:max-w-fit md:min-w-[40rem]">
-          <h1 className="font-semibold text-lg">Create New BookMark </h1>
+          <h1 className="font-semibold text-lg">Update BookMark </h1>
 
           <form onSubmit={handleSubmit(onSubmit)} className="relative">
             <div className="grid grid-cols-12 gap-4 mt-6">
@@ -102,10 +121,10 @@ const NewBook = () => {
                   {isPending ? (
                     <>
                       <FiLoader className="animate-spin" />
-                      <span>Saving Book</span>
+                      <span>Updating Book</span>
                     </>
                   ) : (
-                    "Save Book"
+                    "update Book"
                   )}
                 </button>
               </div>
@@ -118,4 +137,4 @@ const NewBook = () => {
   );
 };
 
-export default NewBook;
+export default UpdateBookMark;

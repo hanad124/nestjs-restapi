@@ -12,6 +12,38 @@ function Login() {
       email: "Entered ${label} is not a valid email!",
     },
   };
+
+  // const onFinish = async (values: any) => {
+  //   const userObj = {
+  //     email: values.email,
+  //     password: values.password,
+  //   };
+  //   try {
+  //     message.loading("Logging In...", 0.5);
+  //     const response = await loginUser(userObj);
+  //     if (response.success) {
+  //       message.success("Logged in successfully");
+  //       localStorage.setItem("token", response.accesToken);
+  //       const tokenExpirationTime = new Date().getTime() + 60 * 60 * 1000;
+  //       localStorage.setItem(
+  //         "tokenExpirationTime",
+  //         tokenExpirationTime.toString()
+  //       );
+  //       setTimeout(() => {
+  //         window.location.href = "/dashboard";
+  //       }, 500);
+  //     } else {
+  //       setTimeout(() => {
+  //         message.error("Failed to login");
+  //       }, 500);
+  //     }
+  //   } catch (error: any) {
+  //     setTimeout(() => {
+  //       message.error(error.message);
+  //     }, 500);
+  //   }
+  // };
+
   const onFinish = async (values: any) => {
     const userObj = {
       email: values.email,
@@ -37,6 +69,7 @@ function Login() {
       }, 500);
     }
   };
+
   return (
     <div className="md:p-5  " data-aos="fade-up">
       <div className=" w-full flex justify-center">

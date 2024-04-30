@@ -1,8 +1,5 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
-// import { deleteInvoice } from "@/actions/invoiceAction";
-// import getShortId from "@/helpers/getShortId";
+import getShortId from "@/helpers/getShortId";
 
 import { ArrowUpDown } from "lucide-react";
 
@@ -16,13 +13,12 @@ export type BookMark = {
 };
 
 export const columns: ColumnDef<BookMark>[] = [
-  // invoice id
   {
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => {
-      const invoice = row.original;
-      return <div className="font-medium">#{invoice.id}</div>;
+      const bookmark = row.original;
+      return <div className="font-medium">#{getShortId(bookmark.id)}</div>;
     },
   },
   {
